@@ -265,7 +265,7 @@ public class StoreFragment extends BasePagerToolbarFragment {
     super.setupViewPager();
     pagerSlidingTabStrip = getView().findViewById(R.id.tabs);
     pagerSlidingTabStrip.setBackgroundResource(
-        themeManager.getAttributeForTheme(storeTheme, R.attr.toolbarBackground).resourceId);
+        themeManager.getAttributeForTheme(null, R.attr.toolbarBackground).resourceId);
 
     if (pagerSlidingTabStrip != null) {
       pagerSlidingTabStrip.setViewPager(viewPager);
@@ -549,7 +549,7 @@ public class StoreFragment extends BasePagerToolbarFragment {
   @Override protected void setupToolbarDetails(Toolbar toolbar) {
     toolbar.setTitle(title);
     toolbar.setBackgroundResource(
-        themeManager.getAttributeForTheme(storeTheme, R.attr.toolbarBackground).resourceId);
+        themeManager.getAttributeForTheme(null, R.attr.toolbarBackground).resourceId);
     if (userId != null) {
       toolbar.setLogo(R.drawable.ic_user_shape_white);
     } else {
