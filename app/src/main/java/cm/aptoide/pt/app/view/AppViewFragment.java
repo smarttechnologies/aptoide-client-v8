@@ -1630,8 +1630,14 @@ public class AppViewFragment extends NavigationTrackFragment implements AppViewV
     activity.setSupportActionBar(toolbar);
     actionBar = activity.getSupportActionBar();
     if (actionBar != null) {
-      actionBar.setDisplayHomeAsUpEnabled(true);
       actionBar.setTitle(toolbar.getTitle());
+    }
+
+    AppCompatActivity appCompatActivity = ((AppCompatActivity) getActivity());
+    ActionBar actionBar = appCompatActivity.getSupportActionBar();
+    if (actionBar != null) {
+      actionBar.setDisplayHomeAsUpEnabled(false);
+      actionBar.setHomeButtonEnabled(false);
     }
   }
 
