@@ -78,7 +78,8 @@ import javax.inject.Inject;
 import org.parceler.Parcels;
 import rx.Observable;
 import rx.subjects.PublishSubject;
-
+import android.view.View;
+import android.os.Handler;
 import static android.view.View.VISIBLE;
 
 public class SearchResultFragment extends BackButtonFragment
@@ -133,7 +134,7 @@ public class SearchResultFragment extends BackButtonFragment
   private PublishSubject<Void> noResultsPublishSubject;
   private PublishSubject<Void> filtersChanged;
   private PublishSubject<Void> searchHasNoResults;
-
+  private Handler handler = new Handler();
   private CardView filtersCardView;
   private FiltersView filtersView;
   private boolean isFreshLoading = false;
@@ -821,7 +822,7 @@ public class SearchResultFragment extends BackButtonFragment
     MenuItemCompat.setOnActionExpandListener(searchMenuItem,
         new MenuItemCompat.OnActionExpandListener() {
           @Override public boolean onMenuItemActionExpand(MenuItem menuItem) {
-            enableUpNavigation();
+            removeBakcButton();
             isSearchExpanded = true;
             return true;
           }
@@ -931,12 +932,20 @@ public class SearchResultFragment extends BackButtonFragment
     }
   }
 
-  public void enableUpNavigation() {
-    if (actionBar != null) {
-      actionBar.setHomeButtonEnabled(true);
-      actionBar.setDisplayHomeAsUpEnabled(true);
-      actionBar.setDisplayShowHomeEnabled(true);
-    }
+  public void removeBakcButton() {
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        if (toolbar != null) {
+          for (int i=0; i<toolbar.getChildCount(); i++) {
+            View v = toolbar.getChildAt(i);
+            if (toolbar.getChildAt(i) instanceof  androidx.appcompat.widget.AppCompatImageButton) {
+              v.setVisibility(View.GONE);
+            }
+          }
+        }
+      }
+    });
   }
 
   @Override public Observable<SearchQueryEvent> onQueryTextChanged() {
