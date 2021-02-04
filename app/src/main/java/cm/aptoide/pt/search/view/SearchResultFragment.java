@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -822,7 +821,7 @@ public class SearchResultFragment extends BackButtonFragment
     MenuItemCompat.setOnActionExpandListener(searchMenuItem,
         new MenuItemCompat.OnActionExpandListener() {
           @Override public boolean onMenuItemActionExpand(MenuItem menuItem) {
-            removeBakcButton();
+            removeBackButton();
             isSearchExpanded = true;
             return true;
           }
@@ -932,14 +931,14 @@ public class SearchResultFragment extends BackButtonFragment
     }
   }
 
-  public void removeBakcButton() {
+  public void removeBackButton() {
     handler.post(new Runnable() {
       @Override
       public void run() {
         if (toolbar != null) {
           for (int i=0; i<toolbar.getChildCount(); i++) {
             View v = toolbar.getChildAt(i);
-            if (toolbar.getChildAt(i) instanceof  androidx.appcompat.widget.AppCompatImageButton) {
+            if (v instanceof  androidx.appcompat.widget.AppCompatImageButton) {
               v.setVisibility(View.GONE);
             }
           }
