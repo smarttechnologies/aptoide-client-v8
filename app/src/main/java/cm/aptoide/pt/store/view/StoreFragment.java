@@ -79,7 +79,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import androidx.appcompat.app.AppCompatActivity;
 import cm.aptoide.pt.smart.SmartUtil;
-import android.util.Log;
 
 /**
  * Created by neuro on 06-05-2016.
@@ -191,31 +190,6 @@ public class StoreFragment extends BasePagerToolbarFragment {
     super.onDestroy();
   }
 
-  @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    super.onCreateOptionsMenu(menu, inflater);
-//    if (hasSearchFromStoreFragment()) {
-//      inflater.inflate(R.menu.fragment_store, menu);
-//
-//      final MenuItem menuItem = menu.findItem(R.id.menu_item_search);
-//      if (appSearchSuggestionsView != null && menuItem != null) {
-//        if (searchIcon != null) {
-//
-//          searchIcon.setOnClickListener((v) ->
-//          {
-//            Log.d("100500", "search clicked");
-//            menu.performIdentifierAction(R.id.menu_item_search, 0);
-//          });
-//        }
-//
-//        appSearchSuggestionsView.initialize(menuItem);
-//      } else if (menuItem != null) {
-//        menuItem.setVisible(false);
-//      } else {
-//        menu.removeItem(R.id.menu_item_search);
-//      }
-//    }
-  }
-
   @Override public void onDetach() {
     bottomNavigationActivity = null;
     super.onDetach();
@@ -243,7 +217,7 @@ public class StoreFragment extends BasePagerToolbarFragment {
       crashReport = CrashReport.getInstance();
     }
 
-   // setHasOptionsMenu(true);
+    setHasOptionsMenu(true);
   }
 
   @Override public void loadExtras(Bundle args) {
@@ -260,7 +234,7 @@ public class StoreFragment extends BasePagerToolbarFragment {
   }
 
   protected boolean hasSearchFromStoreFragment() {
-    return false;
+    return true;
   }
 
   @Override public void onDestroyView() {
