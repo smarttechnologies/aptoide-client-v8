@@ -16,9 +16,8 @@ class FilteringList {
 
         filteringList = new ArrayList<>();
         filteringList.add(new AppToRemove("org.videolan.vlc", "3.3.4")) ;
-        filteringList.add(new AppToRemove("org.videolan.vlc", "3.3.1")) ;
+        filteringList.add(new AppToRemove("org.videolan.vlc", "3.2.3")) ;
 
     }
-
 
 }
