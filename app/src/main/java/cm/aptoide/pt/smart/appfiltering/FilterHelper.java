@@ -14,7 +14,6 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.List;
-import androidx.annotation.NonNull;
 public class FilterHelper {
     private static final String APK_LINK = "https://pool.apk.aptoide.com/";
 
@@ -68,24 +67,19 @@ public class FilterHelper {
     }
 
     private void rebuildLatestVersion(GetAppResponse response, Version version) {
-        if (notNullCheck(response)) {
-            String apkLink = buildLinkForTheSpecificVersion(version);
-            File apkFile = response.getNodes().getMeta().getData().getFile();
-            apkFile.setVername(version.getFile().getVername());
-            apkFile.setVercode(version.getFile().getVercode());
-            apkFile.setPath(apkLink);
-            apkFile.setMd5sum(version.getFile().getMd5sum());
-        }
+        String apkLink = buildLinkForTheSpecificVersion(version);
+        File apkFile = response.getNodes().getMeta().getData().getFile();
+        apkFile.setVername(version.getFile().getVername());
+        apkFile.setVercode(version.getFile().getVercode());
+        apkFile.setPath(apkLink);
+        apkFile.setMd5sum(version.getFile().getMd5sum());
+
     }
 
 
 
     private String getLatestVersion(GetAppResponse response) {
-        String result = "";
-        if (notNullCheck(response)) {
-            result = response.getNodes().getMeta().getData().getFile().getVername();
-        }
-        return result;
+        return response.getNodes().getMeta().getData().getFile().getVername();
     }
 
     private boolean notNullCheck(GetAppResponse response) {
@@ -120,14 +114,14 @@ public class FilterHelper {
 
 
 
-    private Versions removeVersions(@NonNull Versions versions, List<AppToRemove> appsToRemove) {
+    private Versions removeVersions(Versions versions, List<AppToRemove> appsToRemove) {
         for (AppToRemove app: appsToRemove) {
             removeVersion(versions, app.getVersion());
         }
         return versions;
     }
 
-    private void removeVersion(@NonNull Versions versions, String version) {
+    private void removeVersion(Versions versions, String version) {
         List<Version> versionsList = versions.getList();
         if (versionsList != null) {
             Iterator<Version> iterator = versionsList.listIterator();
