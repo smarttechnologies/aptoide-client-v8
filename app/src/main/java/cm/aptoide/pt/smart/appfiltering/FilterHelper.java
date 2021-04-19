@@ -6,7 +6,7 @@ import cm.aptoide.pt.smart.appfiltering.data.GetAppResponse;
 import cm.aptoide.pt.smart.appfiltering.data.Version;
 import cm.aptoide.pt.smart.appfiltering.data.Versions;
 import cm.aptoide.pt.smart.appfiltering.data.File;
-
+import cm.aptoide.pt.smart.appfiltering.data.Nodes;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.List;
-
+import androidx.annotation.NonNull;
 public class FilterHelper {
     private static final String APK_LINK = "https://pool.apk.aptoide.com/";
 
@@ -22,13 +22,16 @@ public class FilterHelper {
     public JSONObject filterResponse(String jsonResponse, List<AppToRemove> filterList) {
         Gson gson = new Gson();
         GetAppResponse response = gson.fromJson(jsonResponse, GetAppResponse.class);
-        response.getNodes().setVersions(removeVersions(response.getNodes().getVersions(), filterList));
-        rebuildLatestVersionIfNeeded(response, filterList);
-        try {
-            JSONObject ob = new JSONObject(gson.toJson(response));
-            return ob;
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (notNullCheck(response)) {
+            response.getNodes().setVersions(removeVersions(response.getNodes().getVersions(), filterList));
+            rebuildLatestVersionIfNeeded(response, filterList);
+            try {
+                JSONObject ob = new JSONObject(gson.toJson(response));
+                return ob;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
         return null;
     }
@@ -65,18 +68,33 @@ public class FilterHelper {
     }
 
     private void rebuildLatestVersion(GetAppResponse response, Version version) {
-        String apkLink = buildLinkForTheSpecificVersion(response, version);
-        File apkFile = response.getNodes().getMeta().getData().getFile();
-        apkFile.setVername(version.getFile().getVername());
-        apkFile.setVercode(version.getFile().getVercode());
-        apkFile.setPath(apkLink);
-        apkFile.setMd5sum(version.getFile().getMd5sum());
+        if (notNullCheck(response)) {
+            String apkLink = buildLinkForTheSpecificVersion(version);
+            File apkFile = response.getNodes().getMeta().getData().getFile();
+            apkFile.setVername(version.getFile().getVername());
+            apkFile.setVercode(version.getFile().getVercode());
+            apkFile.setPath(apkLink);
+            apkFile.setMd5sum(version.getFile().getMd5sum());
+        }
     }
 
 
 
     private String getLatestVersion(GetAppResponse response) {
-        return response.getNodes().getMeta().getData().getFile().getVername();
+        String result = "";
+        if (notNullCheck(response)) {
+            result = response.getNodes().getMeta().getData().getFile().getVername();
+        }
+        return result;
+    }
+
+    private boolean notNullCheck(GetAppResponse response) {
+        return response != null
+                && response.getNodes() != null
+                && response.getNodes().getMeta() != null
+                && response.getNodes().getMeta().getData() != null
+                && response.getNodes().getMeta().getData().getFile() != null
+                && response.getNodes().getVersions() != null;
     }
 
     private boolean shouldRebuildLatestVersion(String latestVersion, List<AppToRemove> filterList) {
@@ -91,7 +109,7 @@ public class FilterHelper {
         return result;
     }
 
-    private String buildLinkForTheSpecificVersion(GetAppResponse response, Version version) {
+    private String buildLinkForTheSpecificVersion(Version version) {
         String link = APK_LINK  + version.getStore().getName()
                 + "/" + version.getPackage().replace(".", "-") +
                 "-" + version.getFile().getVercode() + "-" +
@@ -102,21 +120,23 @@ public class FilterHelper {
 
 
 
-    private Versions removeVersions(Versions versions, List<AppToRemove> appsToRemove) {
+    private Versions removeVersions(@NonNull Versions versions, List<AppToRemove> appsToRemove) {
         for (AppToRemove app: appsToRemove) {
             removeVersion(versions, app.getVersion());
         }
         return versions;
     }
 
-    private void removeVersion(Versions versions, String version) {
+    private void removeVersion(@NonNull Versions versions, String version) {
         List<Version> versionsList = versions.getList();
-        Iterator<Version> iterator = versionsList.listIterator();
+        if (versionsList != null) {
+            Iterator<Version> iterator = versionsList.listIterator();
 
-        while (iterator.hasNext()) {
-            if (iterator.next().getFile().getVername().equals(version)) {
-                iterator.remove();
-                break;
+            while (iterator.hasNext()) {
+                if (iterator.next().getFile().getVername().equals(version)) {
+                    iterator.remove();
+                    break;
+                }
             }
         }
     }
