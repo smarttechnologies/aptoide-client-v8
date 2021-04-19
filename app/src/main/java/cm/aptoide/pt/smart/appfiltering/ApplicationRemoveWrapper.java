@@ -49,10 +49,10 @@ public class ApplicationRemoveWrapper implements Interceptor {
     }
 
 
-    private Response rebuildResponse(Response originalResponse, JSONObject modifiedResposne, Interceptor.Chain chain) {
+    private Response rebuildResponse(Response originalResponse, JSONObject modifiedResponse, Interceptor.Chain chain) {
         MediaType contentType = originalResponse.body().contentType();
         Response r = new Response.Builder()
-                .body(ResponseBody.create(contentType, modifiedResposne.toString()))
+                .body(ResponseBody.create(contentType, modifiedResponse.toString()))
                 .request(chain.request())
                 .protocol(originalResponse.protocol())
                 .code(originalResponse.code())
