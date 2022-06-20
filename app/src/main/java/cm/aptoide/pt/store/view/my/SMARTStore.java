@@ -3,12 +3,9 @@ package cm.aptoide.pt.store.view.my;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 
 public class SMARTStore {
-    private static final String TAG = SMARTStore.class.getSimpleName();
-
-    public static final String FIELD_ID_IA_APP_STORE_ENV = "smart_app_store_env";
+    public static final String USE_RELEASE_APP_STORE_KEY = "Use Release App Store";
 
     private static final boolean DEBUG = "userdebug".equals(Build.TYPE);
     private static final String STORE_RELEASE_NAME = "smarttech-iq";
@@ -21,13 +18,19 @@ public class SMARTStore {
 
     public static String getStoreName(Context context) {
         if (context == null) {
-            Log.e(TAG, "Cannot get context for " + FIELD_ID_IA_APP_STORE_ENV + ", returning default environment!");
             return DEFAULT_STORE_NAME;
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            String name = Settings.Global.getString(context.getContentResolver(), FIELD_ID_IA_APP_STORE_ENV);
-            return name == null ? DEFAULT_STORE_NAME : name;
+        return isReleaseAppStore(context) ? STORE_RELEASE_NAME : STORE_DEBUG_NAME;
+    }
+
+    private static boolean isReleaseAppStore(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            try {
+                return Settings.Global.getInt(context.getContentResolver(), USE_RELEASE_APP_STORE_KEY) != 0;
+            } catch (Settings.SettingNotFoundException e) {
+                Settings.Global.putInt(context.getContentResolver(), USE_RELEASE_APP_STORE_KEY, !DEBUG ? 1 : 0);
+            }
         }
-        return DEFAULT_STORE_NAME;
+        return !DEBUG;
     }
 }

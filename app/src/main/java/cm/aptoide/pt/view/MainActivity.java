@@ -5,17 +5,11 @@
 
 package cm.aptoide.pt.view;
 
-import static cm.aptoide.pt.store.view.my.SMARTStore.FIELD_ID_IA_APP_STORE_ENV;
-
 import android.app.ProgressDialog;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -33,6 +27,7 @@ import cm.aptoide.pt.presenter.MainView;
 import cm.aptoide.pt.presenter.Presenter;
 import cm.aptoide.pt.smart.appfiltering.AddedAppsFetcher;
 import cm.aptoide.pt.smart.appfiltering.FilteredAppsFetcher;
+import cm.aptoide.pt.store.view.my.SMARTStore;
 import cm.aptoide.pt.themes.ThemeAnalytics;
 import cm.aptoide.pt.util.MarketResourceFormatter;
 import cm.aptoide.pt.utils.AptoideUtils;
@@ -148,7 +143,7 @@ public class MainActivity extends BottomNavigationActivity
     super.onResume();
     MoPub.onResume(this);
     if (shouldRestart) {
-      restart(getApplicationContext());
+      restart();
     }
   }
 
@@ -168,31 +163,28 @@ public class MainActivity extends BottomNavigationActivity
   }
 
   private void registerStoreEnvironmentSettingObserver() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+      unregisterStoreEnvironmentSettingObserver();
       storeEnvSettingObserver = new ContentObserver(new Handler()) {
         @Override
         public void onChange(boolean selfChange) {
-          super.onChange(selfChange);
           shouldRestart = true;
         }
       };
-      Uri uri = Settings.Global.getUriFor(FIELD_ID_IA_APP_STORE_ENV);
+
+      Uri uri = Settings.Global.getUriFor(SMARTStore.USE_RELEASE_APP_STORE_KEY);
       getActivity().getContentResolver().registerContentObserver(uri, false, storeEnvSettingObserver);
     }
   }
 
   private void unregisterStoreEnvironmentSettingObserver() {
-    if (storeEnvSettingObserver == null) return;
-    getActivity().getContentResolver().unregisterContentObserver(storeEnvSettingObserver);
+    if (storeEnvSettingObserver != null) {
+      getActivity().getContentResolver().unregisterContentObserver(storeEnvSettingObserver);
+    }
   }
 
-  private void restart(Context context) {
-    PackageManager packageManager = context.getPackageManager();
-    Intent intent = packageManager.getLaunchIntentForPackage(context.getPackageName());
-    if (intent == null) return;
-    ComponentName componentName = intent.getComponent();
-    Intent mainIntent = Intent.makeRestartActivityTask(componentName);
-    context.startActivity(mainIntent);
+  private void restart() {
+    startActivity(Intent.makeRestartActivityTask(getIntent().getComponent()));
     Runtime.getRuntime().exit(0);
   }
 
