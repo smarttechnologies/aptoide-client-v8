@@ -163,18 +163,16 @@ public class MainActivity extends BottomNavigationActivity
   }
 
   private void registerStoreEnvironmentSettingObserver() {
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
-      unregisterStoreEnvironmentSettingObserver();
-      storeEnvSettingObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-          shouldRestart = true;
-        }
-      };
+    unregisterStoreEnvironmentSettingObserver();
+    storeEnvSettingObserver = new ContentObserver(new Handler()) {
+      @Override
+      public void onChange(boolean selfChange) {
+        shouldRestart = true;
+      }
+    };
 
-      Uri uri = Settings.Global.getUriFor(SMARTStore.USE_RELEASE_APP_STORE_KEY);
-      getActivity().getContentResolver().registerContentObserver(uri, false, storeEnvSettingObserver);
-    }
+    Uri uri = Settings.Global.getUriFor(SMARTStore.USE_RELEASE_APP_STORE_KEY);
+    getActivity().getContentResolver().registerContentObserver(uri, false, storeEnvSettingObserver);
   }
 
   private void unregisterStoreEnvironmentSettingObserver() {

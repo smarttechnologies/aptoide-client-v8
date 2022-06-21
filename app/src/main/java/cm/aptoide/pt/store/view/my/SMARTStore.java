@@ -1,18 +1,21 @@
 package cm.aptoide.pt.store.view.my;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 public class SMARTStore {
+    public static final String TAG = SMARTStore.class.getSimpleName();
+
     public static final String USE_RELEASE_APP_STORE_KEY = "Use Release App Store";
-
-    private static final boolean DEBUG = "userdebug".equals(Build.TYPE);
-    private static final String STORE_RELEASE_NAME = "smarttech-iq";
-    private static final String STORE_DEBUG_NAME = "aptoide-test-store";
-    private static final String DEFAULT_STORE_NAME = DEBUG ? STORE_DEBUG_NAME : STORE_RELEASE_NAME;
-
     public static final String STORE_COLOR = "red";
+
+    private static final String RELEASE_STORE_NAME = "smarttech-iq";
+    private static final String DEBUG_STORE_NAME = "aptoide-test-store";
+    private static final boolean IS_DEBUG_BUILD = "userdebug".equals(Build.TYPE);
+    private static final String DEFAULT_STORE_NAME = IS_DEBUG_BUILD ? DEBUG_STORE_NAME : RELEASE_STORE_NAME;
 
     private SMARTStore() {}
 
@@ -20,17 +23,17 @@ public class SMARTStore {
         if (context == null) {
             return DEFAULT_STORE_NAME;
         }
-        return isReleaseAppStore(context) ? STORE_RELEASE_NAME : STORE_DEBUG_NAME;
+        return isReleaseAppStore(context) ? RELEASE_STORE_NAME : DEBUG_STORE_NAME;
     }
 
     private static boolean isReleaseAppStore(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            try {
-                return Settings.Global.getInt(context.getContentResolver(), USE_RELEASE_APP_STORE_KEY) != 0;
-            } catch (Settings.SettingNotFoundException e) {
-                Settings.Global.putInt(context.getContentResolver(), USE_RELEASE_APP_STORE_KEY, !DEBUG ? 1 : 0);
-            }
+        ContentResolver contentResolver = context.getContentResolver();
+        try {
+            return Settings.Global.getInt(contentResolver, USE_RELEASE_APP_STORE_KEY) == 1;
+        } catch (Settings.SettingNotFoundException e) {
+            Log.e(TAG, "Error while getting app store env setting", e);
+            Settings.Global.putInt(contentResolver, USE_RELEASE_APP_STORE_KEY, IS_DEBUG_BUILD ? 0 : 1);
         }
-        return !DEBUG;
+        return !IS_DEBUG_BUILD;
     }
 }
