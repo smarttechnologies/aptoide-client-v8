@@ -32,8 +32,7 @@ public class SMARTStore {
             return Settings.Global.getInt(contentResolver, USE_RELEASE_APP_STORE_KEY) == 1;
         } catch (Settings.SettingNotFoundException e) {
             Log.e(TAG, "Error while getting app store env setting", e);
-            Settings.Global.putInt(contentResolver, USE_RELEASE_APP_STORE_KEY, IS_DEBUG_BUILD ? 0 : 1);
+            return !IS_DEBUG_BUILD;
         }
-        return !IS_DEBUG_BUILD;
     }
 }
