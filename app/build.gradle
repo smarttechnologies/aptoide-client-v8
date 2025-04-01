@@ -213,8 +213,8 @@ android {
         "\"" + project.HOME_PROMOTION_ID + "\""
     variant.buildConfigField "String", "COBRAND_APPLICATION_ID_SUFFIX",
         "\"" + project.COBRAND_APPLICATION_ID_SUFFIX + "\""
-    variant.buildConfigField "String", "APPNEXT_SDK_VERSION",
-        "\"" + APPNEXT_SDK_VERSION + "\""
+//    variant.buildConfigField "String", "APPNEXT_SDK_VERSION",
+//        "\"" + APPNEXT_SDK_VERSION + "\""
 
     variant.buildConfigField "int", "ROOM_SCHEMA_VERSION",
         project.ROOM_SCHEMA_VERSION
@@ -446,9 +446,9 @@ dependencies {
 //  implementation "com.mopub.mediation:unityads:${MOPUB_MEDIATION_UNITYADS_VERSION}"
 
   //AppNext
-  implementation "com.appnext.sdk.adapters:mopub-ads:${APPNEXT_SDK_VERSION}"
-  implementation "com.appnext.sdk.adapters:mopub-native-ads:${APPNEXT_SDK_VERSION}"
-  implementation "com.appnext.sdk.adapters:mopub-banners:${APPNEXT_SDK_VERSION}"
+//  implementation "com.appnext.sdk.adapters:mopub-ads:${APPNEXT_SDK_VERSION}"
+//  implementation "com.appnext.sdk.adapters:mopub-native-ads:${APPNEXT_SDK_VERSION}"
+//  implementation "com.appnext.sdk.adapters:mopub-banners:${APPNEXT_SDK_VERSION}"
 
   //Inmobi
   implementation "com.inmobi.monetization:inmobi-ads:${INMOBI_SDK_VERSION}"

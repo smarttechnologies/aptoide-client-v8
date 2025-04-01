@@ -20,7 +20,7 @@ allprojects {
     jcenter()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url "https://www.jitpack.io" }
-    maven { url "http://dl.appnext.com/" }
+//    maven { url "http://dl.appnext.com/" }
 
     google()
     maven { url 'https://maven.google.com' }
