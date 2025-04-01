@@ -29,14 +29,8 @@ public class AdsBundlesViewHolderFactory {
   }
 
   public AppBundleViewHolder createViewHolder(ViewGroup parent) {
-    if (Build.VERSION.SDK_INT >= 21 && showNatives) {
-      return new AdsWithMoPubBundleViewHolder(LayoutInflater.from(parent.getContext())
-          .inflate(ADS, null, false), uiEventsListener, oneDecimalFormatter, adClickedEvents,
-          marketName);
-    } else {
       return new AdsBundleViewHolder(LayoutInflater.from(parent.getContext())
           .inflate(ADS, parent, false), uiEventsListener, oneDecimalFormatter, adClickedEvents,
           marketName);
-    }
   }
 }

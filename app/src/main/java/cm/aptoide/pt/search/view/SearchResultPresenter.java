@@ -78,7 +78,6 @@ import rx.schedulers.Schedulers;
     handleSuggestionClicked();
     handleFragmentRestorationVisibility();
     doFirstSearch();
-    firstAdsDataLoad();
     handleClickToOpenAppViewFromItem();
     handleSearchListReachedBottom();
     handleQueryTextSubmitted();
@@ -229,18 +228,6 @@ import rx.schedulers.Schedulers;
         .doOnNext(__ -> view.showMoreLoading())
         .flatMapCompletable(viewModel -> loadData(viewModel.getSearchQueryModel()
             .getFinalQuery(), viewModel.getStoreName(), viewModel.getFilters(), false))
-        .compose(view.bindUntilEvent(View.LifecycleEvent.DESTROY))
-        .subscribe(__ -> {
-        }, e -> crashReport.log(e));
-  }
-
-  @VisibleForTesting public void firstAdsDataLoad() {
-    view.getLifecycleEvent()
-        .filter(event -> event.equals(View.LifecycleEvent.CREATE))
-        .map(__ -> view.getViewModel())
-        .filter(viewModel -> hasValidQuery(viewModel))
-        .filter(viewModel -> !viewModel.hasLoadedAds())
-        .flatMapCompletable(__ -> loadBannerAd())
         .compose(view.bindUntilEvent(View.LifecycleEvent.DESTROY))
         .subscribe(__ -> {
         }, e -> crashReport.log(e));
