@@ -186,7 +186,6 @@ android {
         [toolboxProviderAuthority        : "${toolboxProviderAuthority}",
          suggestionProviderAuthority     : "${searchSuggestionProviderAuthority}",
          storeSuggestionProviderAuthority: "${storeSuggestionProviderAuthority}",
-         appLovinApiKey                  : "${project.MOPUB_APPLOVIN_SDK_KEY}",
          adMobApiKey                     : "${project.AD_MOB_APPLICATION_ID}"]
 
     variant.resValue "string", "authenticator_account_type", applicationId
@@ -214,12 +213,8 @@ android {
         "\"" + project.HOME_PROMOTION_ID + "\""
     variant.buildConfigField "String", "COBRAND_APPLICATION_ID_SUFFIX",
         "\"" + project.COBRAND_APPLICATION_ID_SUFFIX + "\""
-    variant.buildConfigField "String", "APPLOVIN_SDK_VERSION",
-        "\"" + APPLOVIN_SDK_VERSION + "\""
-    variant.buildConfigField "String", "APPLOVIN_ADAPTER_VERSION",
-        "\"" + MOPUB_MEDIATION_APPLOVIN_VERSION + "\""
-    variant.buildConfigField "String", "APPNEXT_SDK_VERSION",
-        "\"" + APPNEXT_SDK_VERSION + "\""
+//    variant.buildConfigField "String", "APPNEXT_SDK_VERSION",
+//        "\"" + APPNEXT_SDK_VERSION + "\""
 
     variant.buildConfigField "int", "ROOM_SCHEMA_VERSION",
         project.ROOM_SCHEMA_VERSION
@@ -431,29 +426,29 @@ dependencies {
   implementation "com.google.code.gson:gson:${GSON_VERSION}"
 
 
-  // Mopub
-  implementation("com.mopub:mopub-sdk:${MOPUB_SDK_VERSION}@aar") {
-    transitive = true
-    exclude module: 'moat-mobile-app-kit'
-    exclude group: "com.androidx"
-  }
+//  // Mopub
+//  implementation("com.mopub:mopub-sdk:${MOPUB_SDK_VERSION}@aar") {
+//    transitive = true
+//    exclude module: 'moat-mobile-app-kit'
+//    exclude group: "com.androidx"
+//  }
 
   // AppLovin
-  implementation "com.applovin:applovin-sdk:${APPLOVIN_SDK_VERSION}"
-  implementation "com.mopub.mediation:applovin:${MOPUB_MEDIATION_APPLOVIN_VERSION}"
+//  implementation "com.applovin:applovin-sdk:${APPLOVIN_SDK_VERSION}"
+//  implementation "com.mopub.mediation:applovin:${MOPUB_MEDIATION_APPLOVIN_VERSION}"
 
   // Google (AdMob)
-  implementation "com.mopub.mediation:admob:${MOPUB_MEDIATION_AD_MOB_SDK_VERSION}"
+//  implementation "com.mopub.mediation:admob:${MOPUB_MEDIATION_AD_MOB_SDK_VERSION}"
 
   // UnityAds, Chartboost & One by AOL
   implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
-  implementation "com.unity3d.ads:unity-ads:${UNITY_ADS_SDK_VERSION}"
-  implementation "com.mopub.mediation:unityads:${MOPUB_MEDIATION_UNITYADS_VERSION}"
+//  implementation "com.unity3d.ads:unity-ads:${UNITY_ADS_SDK_VERSION}"
+//  implementation "com.mopub.mediation:unityads:${MOPUB_MEDIATION_UNITYADS_VERSION}"
 
   //AppNext
-  implementation "com.appnext.sdk.adapters:mopub-ads:${APPNEXT_SDK_VERSION}"
-  implementation "com.appnext.sdk.adapters:mopub-native-ads:${APPNEXT_SDK_VERSION}"
-  implementation "com.appnext.sdk.adapters:mopub-banners:${APPNEXT_SDK_VERSION}"
+//  implementation "com.appnext.sdk.adapters:mopub-ads:${APPNEXT_SDK_VERSION}"
+//  implementation "com.appnext.sdk.adapters:mopub-native-ads:${APPNEXT_SDK_VERSION}"
+//  implementation "com.appnext.sdk.adapters:mopub-banners:${APPNEXT_SDK_VERSION}"
 
   //Inmobi
   implementation "com.inmobi.monetization:inmobi-ads:${INMOBI_SDK_VERSION}"

@@ -9,7 +9,6 @@ buildscript {
   dependencies {
     classpath 'com.android.tools.build:gradle:3.6.1'
     classpath 'me.tatarka:gradle-retrolambda:3.7.0'
-    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
     classpath 'io.sentry:sentry-android-gradle-plugin:1.7.29'
@@ -21,11 +20,23 @@ allprojects {
     jcenter()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url "https://www.jitpack.io" }
-    maven { url "http://dl.appnext.com/" }
+//    maven { url "http://dl.appnext.com/" }
 
     google()
     maven { url 'https://maven.google.com' }
-    maven { url "https://s3.amazonaws.com/moat-sdk-builds" }
+//    maven {
+//      url "https://s3.amazonaws.com/moat-sdk-builds"
+//      content {
+//        excludeGroup("androidx.work")
+//        excludeGroup("androidx.room")
+//        excludeGroup("com.applovin")
+//        excludeGroup("com.mopub")
+//        excludeGroup("com.mopub.mediation")
+//        excludeGroup("com.unity3d")
+//        excludeGroup("com.unity3d.ads")
+//        excludeGroup("com.google.android.exoplayer")
+//      }
+//    }
     flatDir {
       dirs 'libs'
     }
@@ -138,7 +149,7 @@ ext {
   SENTRY_VERSION = '1.7.29'
 
   //MOPUB ADS
-  MOPUB_SDK_VERSION = '5.7.1'
+  MOPUB_SDK_VERSION = '5.10.0'
   APPLOVIN_SDK_VERSION = '8.1.4'
   MOPUB_MEDIATION_APPLOVIN_VERSION = '8.1.4.3'
   FLURRY_ADS_VERSION = '11.6.0'

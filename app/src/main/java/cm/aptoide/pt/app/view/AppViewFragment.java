@@ -52,10 +52,8 @@ import cm.aptoide.pt.BuildConfig;
 import cm.aptoide.pt.R;
 import cm.aptoide.pt.ads.AdsRepository;
 import cm.aptoide.pt.ads.MinimalAdMapper;
-import cm.aptoide.pt.ads.MoPubBannerAdListener;
 import cm.aptoide.pt.ads.MoPubConsentDialogView;
 import cm.aptoide.pt.ads.MoPubInterstitialAdClickType;
-import cm.aptoide.pt.ads.MoPubInterstitialAdListener;
 import cm.aptoide.pt.app.AppModel;
 import cm.aptoide.pt.app.AppReview;
 import cm.aptoide.pt.app.DownloadModel;
@@ -104,9 +102,6 @@ import com.jakewharton.rxbinding.support.v4.widget.RxNestedScrollView;
 import com.jakewharton.rxbinding.support.v7.widget.RxToolbar;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.view.ViewScrollChangeEvent;
-import com.mopub.mobileads.MoPubInterstitial;
-import com.mopub.mobileads.MoPubView;
-import com.mopub.nativeads.MoPubRecyclerAdapter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -260,8 +255,6 @@ public class AppViewFragment extends NavigationTrackFragment implements AppViewV
   private View donationsListLayout;
   private ProgressBar donationsProgress;
   private Button listDonateButton;
-  private MoPubInterstitial interstitialAd;
-  private MoPubView bannerAd;
   private View flagThisAppSection;
   private View collapsingAppcBackground;
   private TextView installStateText;
@@ -515,7 +508,6 @@ public class AppViewFragment extends NavigationTrackFragment implements AppViewV
     collapsingToolbarLayout.setExpandedTitleColor(
         getResources().getColor(android.R.color.transparent));
 
-    bannerAd = view.findViewById(R.id.mopub_banner);
     attachPresenter(presenter);
   }
 
@@ -549,12 +541,6 @@ public class AppViewFragment extends NavigationTrackFragment implements AppViewV
     this.menu = menu;
     inflater.inflate(R.menu.fragment_appview, menu);
     showHideOptionsMenu(false);
-  }
-
-  private void destroyAdapter(MoPubRecyclerAdapter adapter) {
-    if (adapter != null) {
-      adapter.destroy();
-    }
   }
 
   @Override public void onDestroyView() {
@@ -625,11 +611,6 @@ public class AppViewFragment extends NavigationTrackFragment implements AppViewV
     donationsAdapter = null;
     donationsElement = null;
     donationsList = null;
-    interstitialAd = null;
-    if (bannerAd != null) {
-      bannerAd.destroy();
-      bannerAd = null;
-    }
     if (poaCountdownTimer != null) {
       poaCountdownTimer.cancel();
       poaCountdownTimer = null;
@@ -1110,15 +1091,6 @@ public class AppViewFragment extends NavigationTrackFragment implements AppViewV
   }
 
   @Override public void initInterstitialAd(boolean isMature) {
-    if (isMature) {
-      interstitialAd =
-          new MoPubInterstitial(getActivity(), BuildConfig.MOPUB_VIDEO_EXCLUSIVE_PLACEMENT_ID);
-    } else {
-      interstitialAd =
-          new MoPubInterstitial(getActivity(), BuildConfig.MOPUB_VIDEO_APPVIEW_PLACEMENT_ID);
-    }
-    interstitialAd.setInterstitialAdListener(new MoPubInterstitialAdListener(interstitialClick));
-    interstitialAd.load();
   }
 
   @Override public Observable<MoPubInterstitialAdClickType> InterstitialAdClicked() {
@@ -1132,18 +1104,9 @@ public class AppViewFragment extends NavigationTrackFragment implements AppViewV
   }
 
   @Override public void showInterstitialAd() {
-    interstitialAd.show();
   }
 
   @Override public void showBannerAd(boolean isMature) {
-    bannerAd.setBannerAdListener(new MoPubBannerAdListener());
-    if (isMature) {
-      bannerAd.setAdUnitId(BuildConfig.MOPUB_BANNER_50_EXCLUSIVE_PLACEMENT_ID);
-    } else {
-      bannerAd.setAdUnitId(BuildConfig.MOPUB_BANNER_50_APPVIEW_PLACEMENT_ID);
-    }
-    bannerAd.setVisibility(View.VISIBLE);
-    bannerAd.loadAd();
   }
 
   @Override public void showAppcWalletPromotionView(Promotion promotion, WalletApp walletApp,

@@ -37,7 +37,6 @@ import cm.aptoide.aptoideviews.filters.Filter;
 import cm.aptoide.aptoideviews.filters.FiltersView;
 import cm.aptoide.pt.BuildConfig;
 import cm.aptoide.pt.R;
-import cm.aptoide.pt.ads.MoPubBannerAdListener;
 import cm.aptoide.pt.ads.MoPubNativeAdsListener;
 import cm.aptoide.pt.app.view.screenshots.ScreenShotClickEvent;
 import cm.aptoide.pt.bottomNavigation.BottomNavigationActivity;
@@ -63,12 +62,6 @@ import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding.support.v7.widget.RxToolbar;
 import com.jakewharton.rxbinding.support.v7.widget.SearchViewQueryTextEvent;
 import com.jakewharton.rxbinding.view.RxView;
-import com.mopub.mobileads.MoPubView;
-import com.mopub.nativeads.InMobiNativeAdRenderer;
-import com.mopub.nativeads.MoPubRecyclerAdapter;
-import com.mopub.nativeads.MoPubStaticNativeAdRenderer;
-import com.mopub.nativeads.RequestParameters;
-import com.mopub.nativeads.ViewBinder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -124,9 +117,7 @@ public class SearchResultFragment extends BackButtonFragment
   private String unsubmittedQuery;
   private boolean isSearchExpanded;
   private BottomNavigationActivity bottomNavigationActivity;
-  private MoPubView bannerAdBottom;
   private PublishSubject<Boolean> noResultsAdultContentSubject;
-  private MoPubRecyclerAdapter moPubRecyclerAdapter;
   private ErrorView errorView;
   private RxAlertDialog enableAdultContentDialog;
   private InputDialog enableAdultContentDialogWithPin;
@@ -198,7 +189,6 @@ public class SearchResultFragment extends BackButtonFragment
     progressBarResults = view.findViewById(R.id.progress_bar_results);
     toolbar = view.findViewById(R.id.toolbar);
 
-    bannerAdBottom = view.findViewById(R.id.mopub_banner);
     errorView = view.findViewById(R.id.error_view);
     filtersView = view.findViewById(R.id.filters_view);
 
@@ -222,7 +212,6 @@ public class SearchResultFragment extends BackButtonFragment
     suggestionsResultList.setVisibility(View.GONE);
     trendingResultList.setVisibility(View.GONE);
     noResults = true;
-    bannerAdBottom.setVisibility(View.GONE);
     noResultsPublishSubject.onNext(null);
   }
 
@@ -241,7 +230,6 @@ public class SearchResultFragment extends BackButtonFragment
     noSearchLayout.setVisibility(View.GONE);
     errorView.setVisibility(View.GONE);
     searchResultsLayout.setVisibility(View.GONE);
-    bannerAdBottom.setVisibility(View.GONE);
   }
 
   @Override public void hideLoading() {
@@ -435,18 +423,9 @@ public class SearchResultFragment extends BackButtonFragment
   }
 
   @Override public void showBannerAd() {
-    bannerAdBottom.setBannerAdListener(new MoPubBannerAdListener());
-    bannerAdBottom.setAdUnitId(BuildConfig.MOPUB_BANNER_50_SEARCH_V2_PLACEMENT_ID);
-    bannerAdBottom.loadAd();
   }
 
   @Override public void showNativeAds(String query) {
-    RequestParameters requestParameters = new RequestParameters.Builder().keywords(query)
-        .build();
-    if (Build.VERSION.SDK_INT >= 21) {
-      moPubRecyclerAdapter.loadAds(BuildConfig.MOPUB_NATIVE_SEARCH_V2_PLACEMENT_ID,
-          requestParameters);
-    }
   }
 
   @Override public void showNoNetworkView() {
@@ -460,7 +439,6 @@ public class SearchResultFragment extends BackButtonFragment
     trendingResultList.setVisibility(View.GONE);
     networkError = true;
     noResults = true;
-    bannerAdBottom.setVisibility(View.GONE);
   }
 
   @Override public void showGenericErrorView() {
@@ -472,7 +450,6 @@ public class SearchResultFragment extends BackButtonFragment
     searchResultList.setVisibility(View.GONE);
     suggestionsResultList.setVisibility(View.GONE);
     trendingResultList.setVisibility(View.GONE);
-    bannerAdBottom.setVisibility(View.GONE);
     networkError = true;
     noResults = true;
   }
@@ -545,14 +522,12 @@ public class SearchResultFragment extends BackButtonFragment
       searchResultsLayout.setVisibility(View.GONE);
       trendingResultList.setVisibility(View.VISIBLE);
       suggestionsResultList.setVisibility(View.GONE);
-      bannerAdBottom.setVisibility(View.GONE);
     } else {
       noSearchLayout.setVisibility(View.GONE);
       errorView.setVisibility(View.GONE);
       searchResultsLayout.setVisibility(View.GONE);
       suggestionsResultList.setVisibility(View.VISIBLE);
       trendingResultList.setVisibility(View.GONE);
-      bannerAdBottom.setVisibility(View.GONE);
     }
   }
 
@@ -562,9 +537,6 @@ public class SearchResultFragment extends BackButtonFragment
     searchResultsLayout.setVisibility(View.GONE);
     trendingResultList.setVisibility(View.VISIBLE);
     suggestionsResultList.setVisibility(View.GONE);
-    if (bannerAdBottom != null) {
-      bannerAdBottom.setVisibility(View.GONE);
-    }
   }
 
   private Observable<Void> recyclerViewReachedBottom(RecyclerView recyclerView) {
@@ -781,14 +753,6 @@ public class SearchResultFragment extends BackButtonFragment
     searchResultList.clearAnimation();
     setupDefaultTheme();
     super.onDestroyView();
-    if (moPubRecyclerAdapter != null) {
-      moPubRecyclerAdapter.destroy();
-      moPubRecyclerAdapter = null;
-    }
-    if (bannerAdBottom != null) {
-      bannerAdBottom.destroy();
-      bannerAdBottom = null;
-    }
   }
 
   @Override public void onDetach() {
@@ -886,29 +850,8 @@ public class SearchResultFragment extends BackButtonFragment
   }
 
   private void attachAllStoresResultListDependencies() {
-    moPubRecyclerAdapter = new MoPubRecyclerAdapter(getActivity(), searchResultsAdapter);
-    configureAdRenderers();
-    moPubRecyclerAdapter.setAdLoadedListener(new MoPubNativeAdsListener());
-    if (Build.VERSION.SDK_INT >= 21) {
-      searchResultList.setAdapter(moPubRecyclerAdapter);
-    } else {
-      searchResultList.setAdapter(searchResultsAdapter);
-    }
+    searchResultList.setAdapter(searchResultsAdapter);
     searchResultList.setLayoutManager(getDefaultLayoutManager());
-  }
-
-  public void configureAdRenderers() {
-    ViewBinder viewBinder = getMoPubViewBinder();
-    moPubRecyclerAdapter.registerAdRenderer(new MoPubStaticNativeAdRenderer(viewBinder));
-    moPubRecyclerAdapter.registerAdRenderer(new InMobiNativeAdRenderer(viewBinder));
-  }
-
-  @NonNull private ViewBinder getMoPubViewBinder() {
-    return new ViewBinder.Builder(R.layout.search_ad).titleId(R.id.app_name)
-        .mainImageId(R.id.native_main_image)
-        .addExtra("primary_ad_view_layout", R.id.primary_ad_view_layout)
-        .iconImageId(R.id.app_icon)
-        .build();
   }
 
   private void setupToolbar() {
