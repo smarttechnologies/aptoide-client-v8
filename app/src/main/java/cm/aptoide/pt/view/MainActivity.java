@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -25,9 +26,6 @@ import cm.aptoide.pt.bottomNavigation.BottomNavigationMapper;
 import cm.aptoide.pt.install.InstallManager;
 import cm.aptoide.pt.presenter.MainView;
 import cm.aptoide.pt.presenter.Presenter;
-import cm.aptoide.pt.smart.appfiltering.AddedAppsFetcher;
-import cm.aptoide.pt.smart.appfiltering.FilteredAppsFetcher;
-import cm.aptoide.pt.store.view.my.SMARTStore;
 import cm.aptoide.pt.themes.ThemeAnalytics;
 import cm.aptoide.pt.util.MarketResourceFormatter;
 import cm.aptoide.pt.utils.AptoideUtils;
@@ -58,14 +56,13 @@ public class MainActivity extends BottomNavigationActivity
   private ProgressDialog autoUpdateDialog;
   private ProgressDialog progressDialog;
   private PublishSubject<String> authenticationSubject;
-  private FilteredAppsFetcher filteredAppsFetcher;
-  private AddedAppsFetcher addedAppsFetcher;
   private ContentObserver storeEnvSettingObserver = null;
 
   private boolean shouldRestart = false;
 
   @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Log.d("Aptoid", "onCreate");
     getActivityComponent().inject(this);
     final AptoideApplication application = (AptoideApplication) getApplicationContext();
     installManager = application.getInstallManager();
@@ -81,26 +78,10 @@ public class MainActivity extends BottomNavigationActivity
     attachPresenter(presenter);
     handleNewIntent(getIntent());
 
-    showFragment(R.id.action_stores);
-
-    filteredAppsFetcher = new FilteredAppsFetcher(
-            ((AptoideApplication) getApplicationContext()).getDefaultClient(),
-            getApplicationContext()
-    );
-    filteredAppsFetcher.populateFilteredAppsAsync();
-
-    addedAppsFetcher = new AddedAppsFetcher(
-            ((AptoideApplication) getApplicationContext()).getDefaultClient(),
-            getApplicationContext()
-    );
-    addedAppsFetcher.populateFilteredAppsAsync();
-
     registerStoreEnvironmentSettingObserver();
   }
 
   @Override protected void onDestroy() {
-    filteredAppsFetcher.unsubscribe();
-    addedAppsFetcher.unsubscribe();
     autoUpdateDialog = null;
     installErrorsDismissEvent = null;
     installManager = null;
@@ -147,8 +128,8 @@ public class MainActivity extends BottomNavigationActivity
       }
     };
 
-    Uri uri = Settings.Global.getUriFor(SMARTStore.USE_RELEASE_APP_STORE_KEY);
-    getActivity().getContentResolver().registerContentObserver(uri, false, storeEnvSettingObserver);
+  /*  Uri uri = Settings.Global.getUriFor(SMARTStore.USE_RELEASE_APP_STORE_KEY);
+    getActivity().getContentResolver().registerContentObserver(uri, false, storeEnvSettingObserver);*/
   }
 
   private void unregisterStoreEnvironmentSettingObserver() {

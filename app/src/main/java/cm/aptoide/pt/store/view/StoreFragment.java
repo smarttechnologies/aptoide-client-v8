@@ -78,7 +78,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import androidx.appcompat.app.AppCompatActivity;
-import cm.aptoide.pt.smart.SmartUtil;
 
 /**
  * Created by neuro on 06-05-2016.
@@ -350,10 +349,6 @@ public class StoreFragment extends BasePagerToolbarFragment {
       handleOptionsItemSelected(toolbarMenuItemClick);
     }
 
-    AppCompatActivity appCompatActivity = ((AppCompatActivity) getActivity());
-    if (appCompatActivity != null) {
-      SmartUtil.disableBackButton(appCompatActivity);
-    }
   }
 
   @CallSuper @Nullable @Override

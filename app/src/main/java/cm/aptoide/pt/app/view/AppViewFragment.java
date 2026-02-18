@@ -472,7 +472,7 @@ public class AppViewFragment extends NavigationTrackFragment implements AppViewV
 
     similarListRecyclerView.setLayoutManager(similarBundlesLayout);
     similarListRecyclerView.setNestedScrollingEnabled(false);
-    hideSimilarApps();
+    setSimilarAppsAdapters();
 
     reviewsView.setLayoutManager(layoutManager);
     // because otherwise the AppBar won't be collapsed

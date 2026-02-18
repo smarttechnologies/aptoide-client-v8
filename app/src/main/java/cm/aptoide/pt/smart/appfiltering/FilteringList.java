@@ -1,22 +1,16 @@
 package cm.aptoide.pt.smart.appfiltering;
 
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 class FilteringList {
-    static final List<AppToRemove> removingList = new CopyOnWriteArrayList<>();
-    static final List<AppToRemove> filteringList = new CopyOnWriteArrayList<>();
+    public static final List<AppToRemove> removingList;
 
-    private FilteringList() {
+    static  {
+        removingList = new ArrayList<>();
+        removingList.add(new AppToRemove("com.smarttechapp.SDC", "2.1.1011.0"));
     }
 
-    public static void populateFilteringList(List<AppToRemove> list) {
-        filteringList.clear();
-        filteringList.addAll(list);
-    }
 
-    public static void populateRemovingList(List<AppToRemove> list) {
-        removingList.clear();
-        removingList.addAll(list);
-    }
 }

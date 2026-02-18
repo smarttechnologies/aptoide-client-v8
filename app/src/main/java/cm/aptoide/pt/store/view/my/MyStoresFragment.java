@@ -99,10 +99,7 @@ public class MyStoresFragment extends StoreTabWidgetsGridRecyclerFragment implem
     }
 
     // SMART related changes for displaying custom store
-//    attachPresenter(myStoresPresenter);
-
-    getFragmentNavigator().navigateTo(AptoideApplication.getFragmentProvider()
-            .newStoreFragment(SMARTStore.getStoreName(view.getContext()), SMARTStore.STORE_COLOR), true);
+    attachPresenter(myStoresPresenter);
   }
 
   @Override protected Observable<List<Displayable>> buildDisplayables(boolean refresh, String url,

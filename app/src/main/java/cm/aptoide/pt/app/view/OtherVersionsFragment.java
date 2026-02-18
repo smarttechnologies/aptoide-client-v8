@@ -43,7 +43,7 @@ import java.util.List;
 import javax.inject.Inject;
 import okhttp3.OkHttpClient;
 import retrofit2.Converter;
-import cm.aptoide.pt.store.view.my.SMARTStore;
+//import cm.aptoide.pt.store.view.my.SMARTStore;
 import java.util.Collections;
 
 public class OtherVersionsFragment extends AptoideBaseFragment<BaseAdapter> {
@@ -158,8 +158,7 @@ public class OtherVersionsFragment extends AptoideBaseFragment<BaseAdapter> {
             getContext().getResources(),
             new AppBundlesVisibilityManager(AptoideUtils.isMIUIwithAABFix(),
                 AptoideUtils.isDeviceMIUI(), new HardwareSpecsFilterPersistence(
-                ((AptoideApplication) getContext().getApplicationContext()).getDefaultSharedPreferences())),
-                Collections.singletonList(SMARTStore.getStoreName(getContext()))),
+                ((AptoideApplication) getContext().getApplicationContext()).getDefaultSharedPreferences()))),
         otherVersionsSuccessRequestListener, err -> err.printStackTrace());
 
     getRecyclerView().addOnScrollListener(endlessRecyclerOnScrollListener);
